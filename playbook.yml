@@ -1,0 +1,27 @@
+---
+# Provision Droplets
+- include: do_droplets.yml
+
+# Common tasks
+- hosts:
+    - node1
+    - node2
+  remote_user: root
+  gather_facts: force
+  roles:
+    - { role: common, tags: ["common"] }
+
+# Backend play
+- hosts: node2
+  remote_user: root
+  roles:
+    - { role: mongo, tags: ["mongo"] }
+    - { role: elasticsearch, tags: ["elasticsearch"] }
+
+# Frontend play
+- hosts: node1
+  remote_user: root
+  roles:
+    - { role: nginx, tags: ["nginx"] }
+    - { role: nodejs, tags: ["nodejs"] }
+    - { role: application, tags: ["application"] }

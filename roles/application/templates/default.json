@@ -1,0 +1,9 @@
+{
+    "chesshub": {
+        "db": "mongodb://{{ mongo_host }}/test",
+	"es":{
+		 "host": "{{ elasticsearch_host }}",
+		 "port": "{{ elasticsearch_port }}"
+    }
+    }
+}

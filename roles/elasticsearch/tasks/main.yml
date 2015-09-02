@@ -1,0 +1,14 @@
+---
+
+- name: Make sure that java is installed
+  apt: name={{ java_pkg_name }} update_cache=yes 
+
+- name: Add elasticsearch apt key
+  apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch
+
+- name: Add apt-repo
+  apt_repository: repo='deb http://packages.elastic.co/elasticsearch/1.7/debian stable main' state=present
+
+- name: Install elasticsearch
+  apt: name=elasticsearch update_cache=yes state=present
+  notify: start elasticsearch

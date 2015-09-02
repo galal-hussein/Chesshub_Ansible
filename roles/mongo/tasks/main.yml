@@ -1,0 +1,15 @@
+---
+
+- name: Add the  apt key
+  apt_key: keyserver=keyserver.ubuntu.com id=7F0CEB10 state=present 
+
+- name: Add mongo repository
+  apt_repository: repo='deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse' state=present
+
+- name: Install nodejs and some dependencies
+  apt: name=mongodb-org update_cache=yes state=present
+  notify: Start mongo
+
+- name: bind address to the private ip
+  lineinfile: dest=/etc/mongod.conf regexp='^bind_ip' line='bind_ip=127.0.0.1,{{ ansible_eth1.ipv4.address }}'
+  notify: Restart mongo

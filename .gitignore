@@ -1,0 +1,3 @@
+ansible-digital_ocean.cache
+env
+roles/common/files/*.pub

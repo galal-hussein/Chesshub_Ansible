@@ -1,0 +1,4 @@
+git_repo: https://github.com/galal-hussein/gamehub.io.git
+mongo_host: localhost
+elasticsearch_host: localhost
+elasticsearch_port: 9200

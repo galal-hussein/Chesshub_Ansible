@@ -1,0 +1,55 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Create Front-end Droplet
+      digital_ocean:
+        state: present
+        command: droplet
+        name: node1
+        private_networking: yes
+        size_id: 66
+        image_id: 13089493
+        region_id: 7
+        ssh_key_ids: 430781 
+        unique_name: yes
+      register: node1
+
+    - name: Add node2 to the inventory.
+      add_host:
+        ansible_ssh_host: "{{ node1.droplet.ip_address }}"
+        ansible_ssh_port: 22
+        name: node1
+        groups: node1
+      when: node1.droplet is defined
+
+    - name: Create Backend-end Droplet
+      digital_ocean:
+        state: present
+        command: droplet
+        name: node2
+        private_networking: yes
+        size_id: 66
+        image_id: 13089493
+        region_id: 7
+        ssh_key_ids: 430781 
+        unique_name: yes
+      register: node2
+
+    - name: Add node2 to the inventory.
+      add_host:
+        ansible_ssh_host: "{{ node2.droplet.ip_address }}"
+        ansible_ssh_port: 22
+        name: node2
+        groups: node2
+      when: node2.droplet is defined
+          
+- hosts:
+    - node1
+    - node2
+  remote_user: root
+  tasks:
+    - name: Wait for port 22 to become available.
+      local_action: "wait_for port=22 host={{ ansible_eth0.ipv4.address }}"

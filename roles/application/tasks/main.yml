@@ -1,0 +1,41 @@
+---
+- name: Install Forever
+  npm: name=forever global=true state=latest
+
+- name: Disable nginx default site
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Copy vhost configurataion
+  template: src=chesshub.conf dest=/etc/nginx/sites-available/chesshub.conf
+
+- name: Enable Vhost configuration
+  file: src=/etc/nginx/sites-available/chesshub.conf dest=/etc/nginx/sites-enabled/chesshub.conf state=link
+  notify: Restart Nginx
+
+# Application Deployment
+- name: Create /var/www dir
+  file: path=/var/www state=directory
+
+- name: Fetch the application source
+  git: repo={{ git_repo }} dest=/var/www/chesshub accept_hostkey=yes force=yes
+
+- name: Install custom application configuration
+  template: src=default.json dest=/var/www/chesshub/config/default.json
+
+- name: Install Dependencies
+  npm: path=/var/www/chesshub state=present
+
+- name: Initialize the Data to elasticsearch and mongodb
+  command: chdir=/var/www/chesshub node initData.js
+
+- name: Upload running script
+  copy: src=run.sh dest=/tmp/run.sh mode=700 owner=root group=root
+
+- name: Make sure that the application is not running
+  command: forever list
+  register: list_result
+  changed_when: false
+ 
+- name: Run the application with Forever
+  shell: chdir=/var/www/chesshub forever start app.js
+  when: list_result.stdout.find('/var/www/chesshub/app.js') == -1

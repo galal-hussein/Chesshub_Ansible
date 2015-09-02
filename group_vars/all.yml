@@ -1,0 +1,4 @@
+---
+mongo_host: "{{ hostvars['node2']['ansible_eth1']['ipv4']['address'] }}"
+elasticsearch_host: "{{ hostvars['node2']['ansible_eth1']['ipv4']['address'] }}"
+elasticsearch_port: 9200
