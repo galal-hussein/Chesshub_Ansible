@@ -10,7 +10,7 @@
         command: droplet
         name: node1
         private_networking: yes
-        size_id: 66
+        size_id: 63
         image_id: 13089493
         region_id: 7
         ssh_key_ids: 430781 
@@ -31,7 +31,7 @@
         command: droplet
         name: node2
         private_networking: yes
-        size_id: 66
+        size_id: 63
         image_id: 13089493
         region_id: 7
         ssh_key_ids: 430781 
